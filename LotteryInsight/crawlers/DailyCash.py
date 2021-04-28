@@ -1,19 +1,24 @@
 import re
+import os
 import time
+import csv
 from datetime import date
+from typing import List
 
 import pandas as pd
 import requests
 from loguru import logger
 
 from LotteryInsight.tools.datasets import dataset_url
+from LotteryInsight.utility.common import download_csv
 
-### 精彩 539
+
 url = dataset_url.get("DailyCash", "")
 
 headers = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.109 Safari/537.36",
 }
+
 
 def get_validation_information(url, headers):
     # 創建網路連接
@@ -33,9 +38,9 @@ def get_validation_information(url, headers):
     __EVENTVALIDATION = __EVENTVALIDATIONpat.findall(r.text)[0]
 
     validaiton_info_dict = {
-        '__VIEWSTATE':__VIEWSTATE,
-        '__VIEWSTATEGENERATOR':__VIEWSTATEGENERATOR,
-        '__EVENTVALIDATION':__EVENTVALIDATION
+        "__VIEWSTATE": __VIEWSTATE,
+        "__VIEWSTATEGENERATOR": __VIEWSTATEGENERATOR,
+        "__EVENTVALIDATION": __EVENTVALIDATION,
     }
     return validaiton_info_dict
 
@@ -46,7 +51,9 @@ def get_html(url, year, month):
 
     post_data = {
         "__VIEWSTATE": validaiton_info_dict.get("__VIEWSTATE"),
-        "__VIEWSTATEGENERATOR": validaiton_info_dict.get("__VIEWSTATEGENERATOR"),
+        "__VIEWSTATEGENERATOR": validaiton_info_dict.get(
+            "__VIEWSTATEGENERATOR"
+        ),
         "__EVENTVALIDATION": validaiton_info_dict.get("__EVENTVALIDATION"),
         "D539Control_history1$chk": "radYM",
         "D539Control_history1$dropYear": year,
@@ -105,11 +112,11 @@ def parser_win_ball_number(html):
 
 
 def update_new():
-    #TODO: update current day
+    # TODO: update current day
     pass
 
 
-def update_history(): #TODO: add interval update
+def update_history(update2db: bool = False):  # TODO: add interval update
     today = date.today().strftime("%Y-%m-%d")
 
     start_year = 103
@@ -127,6 +134,7 @@ def update_history(): #TODO: add interval update
         if not ((y == end_year) and (m > end_month))
     ]
 
+    column_names = ["draw_term", "ddate"] + [f"no{i+1}" for i in range(5)]
     datas = []
     for d in ym_list:
         logger.info(d)
@@ -136,9 +144,16 @@ def update_history(): #TODO: add interval update
         html = get_html(url, year, month)
         data = parser_win_ball_number(html)
         time.sleep(3)
-        datas.extend(data)  # TODO: update to csv or db
 
-    column_names = ["draw_term", "ddate"] + [f"no{i+1}" for i in range(5)]
+        if update2db:
+            # TODO: update to db
+            pass
+        else:
+            filepath = "./LotteryInsight/data/DailyCash.csv"
+            _ = download_csv(data, filepath, column_names)
+
+        datas.extend(data)
+
     datas = pd.DataFrame(datas, columns=column_names)
     datas = datas.sort_values(by=["draw_term", "ddate"])
     return datas
