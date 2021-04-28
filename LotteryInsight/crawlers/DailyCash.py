@@ -1,19 +1,17 @@
 import re
-import os
 import time
-import csv
 from datetime import date
-from typing import List
 
 import pandas as pd
 import requests
 from loguru import logger
 
-from LotteryInsight.tools.datasets import dataset_url
-from LotteryInsight.utility.common import download_csv
+from LotteryInsight.tools.datasets import dataset_url, dataset_column_names
 
 
-url = dataset_url.get("DailyCash", "")
+DATASET = "DailyCash"
+url = dataset_url.get(DATASET, "")
+column_names = dataset_column_names.get(DATASET, "")
 
 headers = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.109 Safari/537.36",
@@ -67,38 +65,56 @@ def get_html(url, year, month):
     return string_html
 
 
-def parser_win_ball_number(html):
+def parser_win_ball_number(html, is_today):
     # 期別
-    draw_term_pattern = r'<span id="D539Control_history1_dlQuery_D539_DrawTerm_\d{1,2}">(.*?)</span>'
+    draw_term_pattern = (
+        r'<span id="D539Control_history1_dlQuery_D539_DrawTerm_0">(.*?)</span>'
+        if is_today
+        else r'<span id="D539Control_history1_dlQuery_D539_DrawTerm_\d{1,2}">(.*?)</span>'
+    )
     draw_terms = re.findall(draw_term_pattern, html)
 
     # 開獎日期
-    ddate_pattern = r'<span id="D539Control_history1_dlQuery_D539_DDate_\d{1,2}">(.*?)</span>'
+    ddate_pattern = (
+        r'<span id="D539Control_history1_dlQuery_D539_DDate_0">(.*?)</span>'
+        if is_today
+        else r'<span id="D539Control_history1_dlQuery_D539_DDate_0">(.*?)</span>'
+    )
     ddates = re.findall(ddate_pattern, html)
 
     # 開出順序
     no1_pattern = (
-        r'<span id="D539Control_history1_dlQuery_SNo1_\d{1,2}">(.*?)</span>'
+        r'<span id="D539Control_history1_dlQuery_SNo1_0">(.*?)</span>'
+        if is_today
+        else r'<span id="D539Control_history1_dlQuery_SNo1_\d{1,2}">(.*?)</span>'
     )
     on1s = re.findall(no1_pattern, html)
 
     no2_pattern = (
-        r'<span id="D539Control_history1_dlQuery_SNo2_\d{1,2}">(.*?)</span>'
+        r'<span id="D539Control_history1_dlQuery_SNo2_0">(.*?)</span>'
+        if is_today
+        else r'<span id="D539Control_history1_dlQuery_SNo2_\d{1,2}">(.*?)</span>'
     )
     on2s = re.findall(no2_pattern, html)
 
     no3_pattern = (
-        r'<span id="D539Control_history1_dlQuery_SNo3_\d{1,2}">(.*?)</span>'
+        r'<span id="D539Control_history1_dlQuery_SNo3_0">(.*?)</span>'
+        if is_today
+        else r'<span id="D539Control_history1_dlQuery_SNo3_\d{1,2}">(.*?)</span>'
     )
     on3s = re.findall(no3_pattern, html)
 
     no4_pattern = (
-        r'<span id="D539Control_history1_dlQuery_SNo4_\d{1,2}">(.*?)</span>'
+        r'<span id="D539Control_history1_dlQuery_SNo4_0">(.*?)</span>'
+        if is_today
+        else r'<span id="D539Control_history1_dlQuery_SNo4_\d{1,2}">(.*?)</span>'
     )
     on4s = re.findall(no4_pattern, html)
 
     no5_pattern = (
-        r'<span id="D539Control_history1_dlQuery_SNo5_\d{1,2}">(.*?)</span>'
+        r'<span id="D539Control_history1_dlQuery_SNo5_0">(.*?)</span>'
+        if is_today
+        else r'<span id="D539Control_history1_dlQuery_SNo5_\d{1,2}">(.*?)</span>'
     )
     on5s = re.findall(no5_pattern, html)
 
@@ -108,15 +124,27 @@ def parser_win_ball_number(html):
     ):
         data.append([dt, dd, o1, o2, o3, o4, o5])
 
+    time.sleep(3)
     return data
 
 
 def update_new():
-    # TODO: update current day
-    pass
+    today = date.today().strftime("%Y-%m-%d")
+    year, month, day = today.split("-")
+    year = int(year) - 1911
+    month = int(month)
+    day = int(day)
+
+    ddate = f"{year}/{str(month).zfill(2)}/{str(day).zfill(2)}"
+    html = get_html(url, year, month)
+    data = parser_win_ball_number(html, True)
+
+    datas = pd.DataFrame(data, columns=column_names)
+    datas = datas[datas["ddate"] == ddate]
+    return datas
 
 
-def update_history(update2db: bool = False):  # TODO: add interval update
+def update_history():  # TODO: add interval update
     today = date.today().strftime("%Y-%m-%d")
 
     start_year = 103
@@ -134,7 +162,6 @@ def update_history(update2db: bool = False):  # TODO: add interval update
         if not ((y == end_year) and (m > end_month))
     ]
 
-    column_names = ["draw_term", "ddate"] + [f"no{i+1}" for i in range(5)]
     datas = []
     for d in ym_list:
         logger.info(d)
@@ -142,16 +169,7 @@ def update_history(update2db: bool = False):  # TODO: add interval update
         month = d.get("month")
 
         html = get_html(url, year, month)
-        data = parser_win_ball_number(html)
-        time.sleep(3)
-
-        if update2db:
-            # TODO: update to db
-            pass
-        else:
-            filepath = "./LotteryInsight/data/DailyCash.csv"
-            _ = download_csv(data, filepath, column_names)
-
+        data = parser_win_ball_number(html, False)
         datas.extend(data)
 
     datas = pd.DataFrame(datas, columns=column_names)
@@ -159,6 +177,13 @@ def update_history(update2db: bool = False):  # TODO: add interval update
     return datas
 
 
-_ = update_history()
-
-print("gg")
+def crawler(mode):
+    if mode == "now":
+        dataframe = update_new()
+    elif mode == "history":
+        dataframe = update_history()
+    elif mode == "period":
+        pass
+    else:
+        dataframe = pd.DataFrame([])
+    return dataframe
