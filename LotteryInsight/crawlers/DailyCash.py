@@ -9,13 +9,29 @@ from loguru import logger
 from LotteryInsight.tools.datasets import dataset_url, dataset_column_names
 
 
-DATASET = "DailyCash"
-url = dataset_url.get(DATASET, "")
-column_names = dataset_column_names.get(DATASET, "")
+TABLE = "DailyCash"
+url = dataset_url.get(TABLE, "")
+column_names = dataset_column_names.get(TABLE, "")
 
 headers = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.109 Safari/537.36",
 }
+
+
+def create_table_sql():
+    sql = f"""
+            CREATE TABLE IF NOT EXISTS {TABLE} (
+                draw_term VARCHAR(9) NOT NULL,
+                ddate DATE NOT NULL,
+                no1 INT NOT NULL,
+                no2 INT NOT NULL,
+                no3 INT NOT NULL,
+                no4 INT NOT NULL,
+                no5 INT NOT NULL,
+                PRIMARY KEY (draw_term, ddate)
+            );
+            """
+    return sql
 
 
 def get_validation_information(url, headers):
@@ -148,7 +164,7 @@ def update_history():  # TODO: add interval update
     today = date.today().strftime("%Y-%m-%d")
 
     start_year = 103
-
+    start_year = 110#FIXME:
     end_year, end_month = today.split("-")[:2]
     end_year = int(end_year) - 1911
     end_month = int(end_month)
