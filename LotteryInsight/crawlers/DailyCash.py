@@ -34,6 +34,11 @@ def create_table_sql():
     return sql
 
 
+def clean_string_date(date: str):
+    y, m, d = date.split("-")
+    return "-".join([str(int(y) + 1911), m, d])
+
+
 def get_validation_information(url, headers):
     # 創建網路連接
     s = requests.Session()
@@ -94,9 +99,10 @@ def parser_win_ball_number(html, is_today):
     ddate_pattern = (
         r'<span id="D539Control_history1_dlQuery_D539_DDate_0">(.*?)</span>'
         if is_today
-        else r'<span id="D539Control_history1_dlQuery_D539_DDate_0">(.*?)</span>'
+        else r'<span id="D539Control_history1_dlQuery_D539_DDate_\d{1,2}">(.*?)</span>'
     )
     ddates = re.findall(ddate_pattern, html)
+    ddates = [clean_string_date(d.replace("/", "-")) for d in ddates]
 
     # 開出順序
     no1_pattern = (
@@ -138,7 +144,7 @@ def parser_win_ball_number(html, is_today):
     for dt, dd, o1, o2, o3, o4, o5 in zip(
         draw_terms, ddates, on1s, on2s, on3s, on4s, on5s
     ):
-        data.append([dt, dd, o1, o2, o3, o4, o5])
+        data.append([str(dt), dd, int(o1), int(o2), int(o3), int(o4), int(o5)])
 
     time.sleep(3)
     return data
@@ -164,7 +170,6 @@ def update_history():  # TODO: add interval update
     today = date.today().strftime("%Y-%m-%d")
 
     start_year = 103
-    start_year = 110#FIXME:
     end_year, end_month = today.split("-")[:2]
     end_year = int(end_year) - 1911
     end_month = int(end_month)
