@@ -35,7 +35,7 @@ def main(args):
     if len(df) > 0:
         logger.info(f"insert data to mysql table:{args.table}")
         # df = check_schema(df.copy(), table)
-        db.update_mysql_data(df=df, table=table)
+        db.update_mysql_data(df=df, table=args.table)
 
 
 if __name__ == "__main__":
