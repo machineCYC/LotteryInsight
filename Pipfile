@@ -12,6 +12,7 @@ lotteryinsight = {editable = true, path = "."}
 sqlalchemy = "*"
 numpy = "==1.19.5"
 pymysql = "==1.0.0"
+apscheduler = "*"
 
 [dev-packages]
 
