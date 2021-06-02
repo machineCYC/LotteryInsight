@@ -28,8 +28,8 @@ def main():
         func=execute_daily_cash_crawler,
         trigger="cron",
         # second="*/5",
-        minute="*/20",
-        hour="22-24",
+        minute="*/10",
+        hour="22-23",
         day_of_week="0-6",
     )
     logger.info("sent DailyCach crawler add scheduler")
