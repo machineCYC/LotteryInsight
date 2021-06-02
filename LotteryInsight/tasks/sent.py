@@ -24,7 +24,7 @@ def main(args):
         conn.execute(sql)
         conn.close()
 
-    logger.info(f"start praser table:{args.table} data with mode:{atgs.mode}")
+    logger.info(f"start praser table:{args.table} data with mode:{args.mode}")
     df = getattr(
         importlib.import_module(f"LotteryInsight.crawlers.{args.table}"),
         "crawler",
