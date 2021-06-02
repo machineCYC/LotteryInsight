@@ -156,8 +156,9 @@ def update_new():
     year = int(year) - 1911
     month = int(month)
     day = int(day)
+    logger.info(f"update DailyCash {today} data")
 
-    ddate = f"{year}/{str(month).zfill(2)}/{str(day).zfill(2)}"
+    ddate = f"{year+1911}-{str(month).zfill(2)}-{str(day).zfill(2)}"
     html = get_html(url, year, month)
     data = parser_win_ball_number(html, True)
 
@@ -185,7 +186,7 @@ def update_history():  # TODO: add interval update
 
     datas = []
     for d in ym_list:
-        logger.info(d)
+        logger.info(f"update DailyCash history year-month {d} data")
         year = d.get("year")
         month = d.get("month")
 
@@ -207,4 +208,5 @@ def crawler(mode):
         pass
     else:
         dataframe = pd.DataFrame([])
+    logger.info(f"get {len(dataframe)} data")
     return dataframe
