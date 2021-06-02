@@ -13,6 +13,7 @@ sqlalchemy = "*"
 numpy = "==1.19.5"
 pymysql = "==1.0.0"
 apscheduler = "*"
+aiocontextvars = "==0.2.2"
 
 [dev-packages]
 
