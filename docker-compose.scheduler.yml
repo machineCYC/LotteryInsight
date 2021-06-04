@@ -1,0 +1,17 @@
+version: "3"
+
+services:
+  scheduler:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: lottery_crawler:latest
+    env_file: .env
+    command: pipenv run python ./LotteryInsight/schedulers/main.py
+    environment:
+      - TZ=Asia/Taipei
+    networks:
+      - dev
+
+networks:
+  dev:
