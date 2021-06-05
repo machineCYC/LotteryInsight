@@ -28,6 +28,7 @@ def create_table_sql():
                 no3 INT NOT NULL,
                 no4 INT NOT NULL,
                 no5 INT NOT NULL,
+                SYS_CREATE_TIME DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
                 PRIMARY KEY (draw_term, ddate)
             );
             """
@@ -144,7 +145,8 @@ def parser_win_ball_number(html, is_today):
     for dt, dd, o1, o2, o3, o4, o5 in zip(
         draw_terms, ddates, on1s, on2s, on3s, on4s, on5s
     ):
-        data.append([str(dt), dd, int(o1), int(o2), int(o3), int(o4), int(o5)])
+        # data.append([str(dt), dd, int(o1), int(o2), int(o3), int(o4), int(o5)])
+        data.append([str(dt), dd, o1, o2, o3, o4, o5])
 
     time.sleep(3)
     return data
@@ -186,12 +188,12 @@ def update_history():  # TODO: add interval update
 
     datas = []
     for d in ym_list:
-        logger.info(f"update DailyCash history year-month {d} data")
         year = d.get("year")
         month = d.get("month")
 
         html = get_html(url, year, month)
         data = parser_win_ball_number(html, False)
+        logger.info(f"update DailyCash history {d} data, count:{len(data)}")
         datas.extend(data)
 
     datas = pd.DataFrame(datas, columns=column_names)

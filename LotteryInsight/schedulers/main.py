@@ -27,8 +27,7 @@ def main():
         id="sent DailyCach task",
         func=execute_daily_cash_crawler,
         trigger="cron",
-        # second="*/5",
-        minute="*/10",
+        minute="*/20",
         hour="22-23",
         day_of_week="0-6",
     )
