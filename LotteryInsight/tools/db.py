@@ -25,14 +25,14 @@ def generate_dataframe_insert_update_sql(df: pd.DataFrame, table: str):
     for raw in list_data:
 
         update_sql = ", ".join(["`{0}`='{1}'".format(c, e) for c, e in zip(table_columns, raw)])
-        insert_update_sql = """INSERT INTO `{0}` ({1}) VALUES ({2}) ON DUPLICATE KEY UPDATE {3}
-            """.format(
+        update_sql += ", `SYS_UPDATE_COUNT`=`SYS_UPDATE_COUNT`+1"
+        upsert_sql = """INSERT INTO `{0}` ({1}) VALUES ({2}) ON DUPLICATE KEY UPDATE {3}""".format(
             table,
             "`{}`".format("`,`".join(table_columns)),
             "'{}'".format("','".join(raw)),
             update_sql,
         )
-        list_insert_update_commands.append(insert_update_sql)
+        list_insert_update_commands.append(upsert_sql)
     return list_insert_update_commands
 
 
@@ -52,4 +52,5 @@ def execute_mysql_command(
             logger.info(f"execute sql:{s}")
             mysql_database_conn.execute(sql_command)
     except Exception as e:
-        raise BaseException(f"mysql_insert: {e}")
+        logger.error(f"mysql_insert: {e}")
+        # raise BaseException(f"mysql_insert: {e}")
