@@ -7,7 +7,7 @@ COPY . /workspace/
 WORKDIR /workspace/
 
 # install package
-RUN echo "nameserver 8.8.8.8" > /etc/resolv.conf && pip install pipenv && pipenv sync
+RUN pip install pipenv && pipenv sync
 
 # genenv
 RUN VERSION=PROD python genenv.py
