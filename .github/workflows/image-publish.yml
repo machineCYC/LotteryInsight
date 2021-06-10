@@ -1,23 +1,22 @@
-name: Upload Image
-
+name: Publish Docker image
 on:
   push:
     branches: [ main ]
 
 jobs:
-  build:
+  push_to_registry:
+    name: Push Docker image to Docker Hub
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        python-version: [ 3.6 ]
     steps:
-      - uses: actions/checkout@v2
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v2
+      - name: Check out the repo
+        uses: actions/checkout@v2
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v1
         with:
-          python-version: ${{ matrix.python-version }}
-      - name: Build and publish images
-        env:
-          PASSWORD: ${{ secrets.DOCKER_TOKEN }}
-        run: |
-          make build-image
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Push to Docker Hub
+        uses: docker/build-push-action@v2
+        with:
+          push: true
+          tags: machinedockercyc/lottery_crawler:latest
