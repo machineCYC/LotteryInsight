@@ -1,0 +1,23 @@
+name: Upload Image
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [ 3.6 ]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Build and publish images
+        env:
+          PASSWORD: ${{ secrets.DOCKER_TOKEN }}
+        run: |
+          make build-image
