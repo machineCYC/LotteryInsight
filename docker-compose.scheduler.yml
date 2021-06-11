@@ -5,8 +5,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: lottery_crawler:latest
-    env_file: .env
+    image: machinedockercyc/lottery_crawler:latest
     command: pipenv run python ./LotteryInsight/schedulers/main.py
     environment:
       - TZ=Asia/Taipei
