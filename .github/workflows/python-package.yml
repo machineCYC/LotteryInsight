@@ -26,6 +26,6 @@ jobs:
           pipenv --python /usr/bin/python3
       - name: Test with pytest
         run: |
-          VERSION=PROD python genenv.py
+          VERSION=CI python genenv.py
           pipenv sync
           pipenv run pytest --cov-report term-missing --cov-config=.coveragerc --cov=./ tests/
