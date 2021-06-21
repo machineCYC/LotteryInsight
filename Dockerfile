@@ -10,7 +10,7 @@ WORKDIR /workspace/
 RUN pip install pipenv && pipenv sync
 
 # genenv
-RUN VERSION=PROD python genenv.py
+RUN python genenv.py
 
 # time
 RUN echo "Asia/Taipei" > /etc/timezone
