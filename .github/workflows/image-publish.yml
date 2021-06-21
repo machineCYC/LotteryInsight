@@ -32,7 +32,7 @@ jobs:
           push: true
           tags: machinedockercyc/lottery_crawler:latest
           secrets: |
-            "MYSQL_PORT=${{ secrets.MYSQL_PORT }}"
+            MYSQL_PORT=${{ secrets.MYSQL_PORT }}
 
   deploy:
     name: deploy images
