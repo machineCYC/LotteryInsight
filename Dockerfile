@@ -9,7 +9,7 @@ WORKDIR /workspace/
 # install package
 RUN pip install pipenv && pipenv sync
 
-ENV MYSQL_PORT=3306
+ENV MYSQL_PORT=${MYSQL_PORT}
 
 # genenv
 RUN python genenv.py
