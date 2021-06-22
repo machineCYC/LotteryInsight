@@ -19,7 +19,7 @@ jobs:
           MYSQL_PASSWORD: ${{ secrets.MYSQL_PASSWORD }}
         run: |
           echo $MYSQL_HOST
-          
+
       - name: Log in to Docker Hub
         uses: docker/login-action@v1
         with:
@@ -32,7 +32,7 @@ jobs:
           push: true
           tags: machinedockercyc/lottery_crawler:latest
           secrets: |
-            MYSQL_PORT=${{ secrets.MYSQL_PORT }}
+            MYSQL_PORT=3306
 
   deploy:
     name: deploy images
