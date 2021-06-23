@@ -10,7 +10,15 @@ WORKDIR /workspace/
 RUN pip install pipenv && pipenv sync
 
 # genenv
-RUN python genenv.py
+RUN --mount=type=secret,id=MYSQL_HOST \
+  --mount=type=secret,id=MYSQL_USER \
+  --mount=type=secret,id=MYSQL_PASSWORD \
+  --mount=type=secret,id=MYSQL_PORT \
+  export MYSQL_HOST=$(cat /run/secrets/MYSQL_HOST) && \
+  export MYSQL_USER=$(cat /run/secrets/MYSQL_USER) && \
+  export MYSQL_PASSWORD=$(cat /run/secrets/MYSQL_PASSWORD) && \
+  export MYSQL_PORT=$(cat /run/secrets/MYSQL_PORT) && \
+  python genenv.py
 
 # time
 RUN echo "Asia/Taipei" > /etc/timezone
