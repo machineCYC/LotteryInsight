@@ -1,25 +1,34 @@
 # LotteryInsight
 
-## 環境設定
+## Environment setting
 
-    VERSION=DEV python genenv.py
+    1. setup python env (must install pipenv pyenv)
+        - pipenv --python /home/**username**/.pyenv/versions/3.6.9/bin/python3.6 shell
 
-## build images
+    2. sync python library
+        - pipenv sync
 
-    docker build -f Dockerfile -t lottery_crawler:latest .
-    docker build -f Dockerfile.cache -t lottery_crawler:dev .
+    3. create .env file
+        - python genenv.py
 
-## run local mysql db
+    4. setting environment variable in .env file
 
-    docker-compose -f docker-compose.db.yml up
-    docker-compose -f docker-compose.db.yml down
+## Local develop setup
 
-## run scheduler
+    1. create local mysql server
+        - make run-dev-mysql
 
-    docker-compose -f docker-compose.scheduler.yml up
-    docker-compose -f docker-compose.scheduler.yml down
+    2. develop the crawler in LotteryInsight/crawlers folder
 
-## push docker to dockerhub
+    If you want to try regular crawler data, you can try step 3
+    3. create local scheduler
+        - make build-dev-image
+        - make run-dev-scheduler
 
-    docker tag lottery_crawler:latest machinedockercyc/lotterydocker:latest
-    docker push machinedockercyc/lotterydocker:latest
+    4. If complete develop, please end up mysql server and scheduler.
+
+        close mysql server
+        - make end-dev-mysql
+
+        close scheduler
+        - make end-dev-scheduler
