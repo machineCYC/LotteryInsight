@@ -21,6 +21,11 @@ def execute_daily_cash_crawler():
     execute_commend(commend_line)
 
 
+def execute_lotto649_crawler():
+    commend_line = f"python {PROJECT_PATH}/LotteryInsight/tasks/brain.py --mode=now --table=Lotto649"
+    execute_commend(commend_line)
+
+
 def main():
     scheduler = BackgroundScheduler(timezone="Asia/Taipei")
     scheduler.add_job(
@@ -32,6 +37,15 @@ def main():
         day_of_week="0-6",
     )
     logger.info("sent DailyCach crawler add scheduler")
+    scheduler.add_job(
+        id="sent Lotto649 task",
+        func=execute_lotto649_crawler,
+        trigger="cron",
+        minute="*/20",
+        hour="22-22",
+        day_of_week="2,5",
+    )
+    logger.info("sent Lotto649 crawler add scheduler")
     scheduler.start()
 
 
