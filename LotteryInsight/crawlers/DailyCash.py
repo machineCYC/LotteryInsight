@@ -7,15 +7,19 @@ import requests
 from loguru import logger
 
 from LotteryInsight.tools.datasets import dataset_url, dataset_column_names
+from LotteryInsight.utility.common import get_header, get_validation_information
+from LotteryInsight.utility.date import (
+    get_today,
+    split_date2yearmonthdate,
+    transfer_commonera2rocera,
+    create_year_month_list,
+    get_ym,
+)
 
 
 TABLE = "DailyCash"
 url = dataset_url.get(TABLE, "")
 column_names = dataset_column_names.get(TABLE, "")
-
-headers = {
-    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.109 Safari/537.36",
-}
 
 
 def create_table_sql():
@@ -40,31 +44,6 @@ def create_table_sql():
 def clean_string_date(date: str):
     y, m, d = date.split("-")
     return "-".join([str(int(y) + 1911), m, d])
-
-
-def get_validation_information(url, headers):
-    # 創建網路連接
-    s = requests.Session()
-
-    # 獲取網頁查詢資訊"認證"
-    r = s.get(url=url, headers=headers)
-    __VIEWSTATEGENERATORpat = re.compile(
-        '<input.*?id="__VIEWSTATEGENERATOR" value="(.*?)" />'
-    )
-    __VIEWSTATEGENERATOR = __VIEWSTATEGENERATORpat.findall(r.text)[0]
-    __VIEWSTATEpat = re.compile('<input.*?id="__VIEWSTATE" value="(.*?)" />')
-    __VIEWSTATE = __VIEWSTATEpat.findall(r.text)[0]
-    __EVENTVALIDATIONpat = re.compile(
-        '<input.*?id="__EVENTVALIDATION" value="(.*?)" />'
-    )
-    __EVENTVALIDATION = __EVENTVALIDATIONpat.findall(r.text)[0]
-
-    validaiton_info_dict = {
-        "__VIEWSTATE": __VIEWSTATE,
-        "__VIEWSTATEGENERATOR": __VIEWSTATEGENERATOR,
-        "__EVENTVALIDATION": __EVENTVALIDATION,
-    }
-    return validaiton_info_dict
 
 
 def get_html(url, year, month):
@@ -154,62 +133,38 @@ def parser_win_ball_number(html, is_today):
 
 
 def update_new():
-    today = date.today().strftime("%Y-%m-%d")
-    year, month, day = today.split("-")
-    year = int(year) - 1911
-    month = int(month)
-    day = int(day)
-    logger.info(f"update DailyCash {today} data")
+    today = get_today()
+    logger.info(f"update {TABLE} {today} data")
 
-    ddate = f"{year+1911}-{str(month).zfill(2)}-{str(day).zfill(2)}"
-    html = get_html(url, year, month)
+    year, month, day = split_date2yearmonthdate(today)
+    roc_year = transfer_commonera2rocera(year)
+
+    html = get_html(url, int(roc_year), int(month))
     data = parser_win_ball_number(html, True)
 
     datas = pd.DataFrame(data, columns=column_names)
-    datas = datas[datas["ddate"] == ddate]
+    datas = datas[datas["ddate"] == today]
     return datas
 
 
 def update_history():  # TODO: add interval update
-    today = date.today().strftime("%Y-%m-%d")
+    logger.info(f"start update {TABLE} history data")
+    ym = get_ym()
 
-    start_year = 103
-    end_year, end_month = today.split("-")[:2]
-    end_year = int(end_year) - 1911
-    end_month = int(end_month)
-
-    years = [y for y in range(start_year, end_year + 1, 1)]
-    months = [m for m in range(1, 13)]
-    ym_list = [
-        dict(year=y, month=m)
-        for y in years
-        for m in months
-        if not ((y == end_year) and (m > end_month))
-    ]
+    # start 103 year
+    ym_list = create_year_month_list(start_ym="2014-01", end_ym=ym)
 
     datas = []
     for d in ym_list:
         year = d.get("year")
+        roc_year = transfer_commonera2rocera(year)
         month = d.get("month")
 
-        html = get_html(url, year, month)
+        html = get_html(url, int(roc_year), month)
         data = parser_win_ball_number(html, False)
-        logger.info(f"update DailyCash history {d} data, count:{len(data)}")
+        logger.info(f"update {TABLE} history {d} data, count:{len(data)}")
         datas.extend(data)
 
     datas = pd.DataFrame(datas, columns=column_names)
     datas = datas.sort_values(by=["draw_term", "ddate"])
     return datas
-
-
-def crawler(mode):
-    if mode == "now":
-        dataframe = update_new()
-    elif mode == "history":
-        dataframe = update_history()
-    elif mode == "period":
-        pass
-    else:
-        dataframe = pd.DataFrame([])
-    logger.info(f"get {len(dataframe)} data")
-    return dataframe

@@ -39,7 +39,7 @@ def main(args):
         pass
     else:
         df = pd.DataFrame([])
-    logger.info(f"get {len(dataframe)} data")
+    logger.info(f"get {len(df)} data")
 
     if len(df) > 0:
         logger.info(f"insert data to mysql table:{args.table}")
@@ -63,6 +63,7 @@ if __name__ == "__main__":
         "--table",
         help="Example: DailyCash means process this dataset",
         default="Lotto649",
+        choices=["DailyCash", "Lotto649"],
         type=str,
     )
     args = parser.parse_args()
