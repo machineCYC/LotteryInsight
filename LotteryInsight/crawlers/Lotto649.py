@@ -32,6 +32,7 @@ def create_table_sql():
                 no3 INT NOT NULL,
                 no4 INT NOT NULL,
                 no5 INT NOT NULL,
+                no6 INT NOT NULL,
                 sno INT NOT NULL,
                 SYS_CREATE_TIME DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
                 SYS_UPDATE_TIME DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
