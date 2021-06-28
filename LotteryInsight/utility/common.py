@@ -7,6 +7,11 @@ import requests
 from loguru import logger
 
 
+def clean_string_date(date: str):
+    y, m, d = date.split("-")
+    return "-".join([str(int(y) + 1911), m, d])
+
+
 def get_header():
     headers = {
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.109 Safari/537.36",

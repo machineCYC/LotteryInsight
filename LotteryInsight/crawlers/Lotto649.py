@@ -7,7 +7,11 @@ import requests
 from loguru import logger
 
 from LotteryInsight.tools.datasets import dataset_url, dataset_column_names
-from LotteryInsight.utility.common import get_header, get_validation_information
+from LotteryInsight.utility.common import (
+    get_header,
+    get_validation_information,
+    clean_string_date,
+)
 from LotteryInsight.utility.date import (
     get_today,
     split_date2yearmonthdate,
@@ -41,11 +45,6 @@ def create_table_sql():
             );
             """
     return sql
-
-
-def clean_string_date(date: str):
-    y, m, d = date.split("-")
-    return "-".join([str(int(y) + 1911), m, d])
 
 
 def get_html(url, year, month):
