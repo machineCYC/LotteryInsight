@@ -46,6 +46,7 @@ def create_table_sql():
 
 
 def get_html(url, year, month):
+    headers = get_header()
     validaiton_info_dict = get_validation_information(url, headers)
     request = requests.post(url=url)
 
