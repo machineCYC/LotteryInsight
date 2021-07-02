@@ -43,7 +43,7 @@ def main():
         trigger="cron",
         minute="*/20",
         hour="22-22",
-        day_of_week="2,5",
+        day_of_week="2-5",
     )
     logger.info("sent Lotto649 crawler add scheduler")
     scheduler.start()
