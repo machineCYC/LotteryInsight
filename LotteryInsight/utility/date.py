@@ -11,16 +11,25 @@ def get_ym():
     return ym
 
 
-def split_date2yearmonthdate(date):
+def split_date2yearmonthdate(date: str):
     year, month, date = date.split("-")
     return year, month, date
 
 
-def transfer_commonera2rocera(year):
+def transfer_commonera2rocera(year: str):
     return str(int(year) - 1911)
 
 
-def create_year_month_list(start_ym, end_ym):
+def transfer_rocera2commonera(year: str):
+    return str(int(year) + 1911)
+
+
+def transfer_date2ym(date: str):
+    ym = "-".join(date.split('-')[:2])
+    return ym
+
+
+def create_year_month_list(start_ym: str, end_ym: str):
     start_year, start_month = start_ym.split("-")
     end_year, end_month = end_ym.split("-")
 
