@@ -1,25 +1,21 @@
 import re
 import time
-from datetime import date
 
 import pandas as pd
 import requests
 from loguru import logger
-
-from LotteryInsight.tools.datasets import dataset_url, dataset_column_names
+from LotteryInsight.tools.datasets import dataset_column_names, dataset_url
 from LotteryInsight.utility.common import (
+    clean_string_date,
     get_header,
     get_validation_information,
-    clean_string_date,
 )
 from LotteryInsight.utility.date import (
-    get_today,
-    split_date2yearmonthdate,
-    transfer_commonera2rocera,
     create_year_month_list,
-    get_ym,
+    get_today,
+    transfer_commonera2rocera,
+    transfer_date2ym,
 )
-
 
 TABLE = "Lotto649"
 url = dataset_url.get(TABLE, "")
@@ -146,27 +142,13 @@ def parser_win_ball_number(html, is_today):
     return data
 
 
-def update_new():
-    today = get_today()
-    logger.info(f"update {TABLE} {today} data")
-
-    year, month, day = split_date2yearmonthdate(today)
-    roc_year = transfer_commonera2rocera(year)
-
-    html = get_html(url, int(roc_year), int(month))
-    data = parser_win_ball_number(html, True)
-
-    datas = pd.DataFrame(data, columns=column_names)
-    datas = datas[datas["ddate"] == today]
-    return datas
-
-
-def update_history():  # TODO: add interval update
-    logger.info(f"start update {TABLE} history data")
-    ym = get_ym()
+def update(start_date: str = "2014-01-01", end_date: str = get_today()):
+    logger.info(f"start update {TABLE} data, from {start_date} to {end_date}")
+    start_ym = transfer_date2ym(start_date)
+    end_ym = transfer_date2ym(end_date)
 
     # start 103 year
-    ym_list = create_year_month_list(start_ym="2014-01", end_ym=ym)
+    ym_list = create_year_month_list(start_ym=start_ym, end_ym=end_ym)
 
     datas = []
     for d in ym_list:
@@ -180,5 +162,6 @@ def update_history():  # TODO: add interval update
         datas.extend(data)
 
     datas = pd.DataFrame(datas, columns=column_names)
+    datas = datas[(datas["ddate"] >= start_date) & (datas["ddate"] <= end_date)]
     datas = datas.sort_values(by=["draw_term", "ddate"])
     return datas

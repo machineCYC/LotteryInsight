@@ -6,22 +6,8 @@ def get_today():
     return today
 
 
-def get_ym():
-    ym = date.today().strftime("%Y-%m")
-    return ym
-
-
-def split_date2yearmonthdate(date: str):
-    year, month, date = date.split("-")
-    return year, month, date
-
-
 def transfer_commonera2rocera(year: str):
     return str(int(year) - 1911)
-
-
-def transfer_rocera2commonera(year: str):
-    return str(int(year) + 1911)
 
 
 def transfer_date2ym(date: str):
