@@ -1,5 +1,14 @@
 # LotteryInsight
 
+This repository provide [Taiwan Lottery](https://www.taiwanlottery.com.tw/index_new.aspx) crawler framework to collect the data into mysql database.
+
+Below table is the list of provide crawler.
+
+Dataset       | Crawler | Official web update schedule |
+--------------|:-----:|:-----:|
+大樂透    | DailyCash | Monday-Saturday 10pm |
+今彩539   | Lotto649 | Tuesday, Friday 10pm |
+
 ## Environment setting
 
     1. setup python env (must install pipenv pyenv)
