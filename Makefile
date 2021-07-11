@@ -23,16 +23,16 @@ end-scheduler:
 
 # dev
 build-dev-image:
-	docker build -f Dockerfile.dev -t lottery_crawler:latest .
+	docker build -f .devcontainer/Dockerfile.dev -t lottery_crawler:latest .
 
 run-dev-mysql:
-	docker-compose -f docker-compose.db.dev.yml up -d
+	docker-compose -f .devcontainer/docker-compose.db.dev.yml up -d
 
 end-dev-mysql:
-	docker-compose -f docker-compose.db.yml domn
+	docker-compose -f .devcontainer/docker-compose.db.dev.yml down
 
 run-dev-scheduler:
-	docker-compose -f docker-compose.scheduler.dev.yml up -d
+	docker-compose -f .devcontainer/docker-compose.scheduler.dev.yml up -d
 
 end-dev-scheduler:
-	docker-compose -f docker-compose.scheduler.dev.yml down
+	docker-compose -f .devcontainer/docker-compose.scheduler.dev.yml down

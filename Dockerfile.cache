@@ -1,6 +1,0 @@
-FROM lottery_crawler:latest
-
-COPY ./LotteryInsight /workspace
-COPY .env /workspace
-
-WORKDIR /workspace/
