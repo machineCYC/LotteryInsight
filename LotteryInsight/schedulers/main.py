@@ -69,7 +69,7 @@ def main():
         day_of_week="2-5",
     )
     logger.info("sent Lotto649 crawler add scheduler")
-        scheduler.add_job(
+    scheduler.add_job(
         id="sent Superlotto638 task",
         func=execute_superlotto638_crawler,
         trigger="cron",
