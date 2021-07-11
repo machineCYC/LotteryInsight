@@ -65,8 +65,8 @@ if __name__ == "__main__":
     parser.add_argument(
         "--table",
         help="Example: DailyCash means process this dataset",
-        default="Lotto649",
-        choices=["DailyCash", "Lotto649"],
+        default="Superlotto638",
+        choices=["DailyCash", "Lotto649", "Superlotto638"],
         type=str,
     )
     args = parser.parse_args()

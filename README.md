@@ -4,10 +4,11 @@ This repository provide [Taiwan Lottery](https://www.taiwanlottery.com.tw/index_
 
 Below table is the list of provide crawler.
 
-Dataset       | Crawler | Official web update schedule |
---------------|:-----:|:-----:|
-大樂透    | DailyCash | Monday-Saturday 10pm |
-今彩539   | Lotto649 | Tuesday, Friday 10pm |
+Dataset       | Crawler | Official web update schedule | Crawler update scheduler |
+--------------|:-----:|:-----:|:-----:|
+大樂透    | DailyCash | Monday-Saturday 10pm | Monday-Saturday 10pm-11pm 1/20min |
+今彩539   | Lotto649 | Tuesday, Friday 10pm | Tuesday, Friday 10pm-11pm 1/15min |
+威力彩   | Superlotto638 | Monday, Thursday 10pm | Monday, Thursday 10pm-11pm 1/20min |
 
 ## Environment setting
 

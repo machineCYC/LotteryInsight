@@ -39,6 +39,16 @@ def execute_lotto649_crawler():
     execute_commend(commend_line)
 
 
+def execute_superlotto638_crawler():
+    today = get_today()
+    commend_line = f"python {PROJECT_PATH}/LotteryInsight/tasks/brain.py \
+        --create_table=False \
+        --start_date={today} \
+        --end_date={today} \
+        --table=Superlotto638"
+    execute_commend(commend_line)
+
+
 def main():
     scheduler = BackgroundScheduler(timezone="Asia/Taipei")
     scheduler.add_job(
@@ -59,6 +69,15 @@ def main():
         day_of_week="2-5",
     )
     logger.info("sent Lotto649 crawler add scheduler")
+        scheduler.add_job(
+        id="sent Superlotto638 task",
+        func=execute_superlotto638_crawler,
+        trigger="cron",
+        minute="*/20",
+        hour="22-22",
+        day_of_week="1-4",
+    )
+    logger.info("sent Superlotto638 crawler add scheduler")
     scheduler.start()
 
 
