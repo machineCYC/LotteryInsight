@@ -66,7 +66,7 @@ def main():
         trigger="cron",
         minute="*/20",
         hour="22-22",
-        day_of_week="2-5",
+        day_of_week="tue,fri",
     )
     logger.info("sent Lotto649 crawler add scheduler")
     scheduler.add_job(
@@ -75,7 +75,7 @@ def main():
         trigger="cron",
         minute="*/20",
         hour="22-22",
-        day_of_week="1-4",
+        day_of_week="mon,thu",
     )
     logger.info("sent Superlotto638 crawler add scheduler")
     scheduler.start()
