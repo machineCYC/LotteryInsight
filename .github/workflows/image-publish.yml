@@ -36,4 +36,4 @@ jobs:
     steps:
       - name: pull machinedockercyc images
         run: |
-          pwd
+          docker push machinedockercyc/lotterydocker:latest
