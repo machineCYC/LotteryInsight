@@ -40,4 +40,6 @@ jobs:
 
       - name: restart application
         run: |
+          cd /home/cychouse/workspace/LotteryInsight
+          git pull origin main
           docker-compose -f docker-compose.scheduler.yml restart
