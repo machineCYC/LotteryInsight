@@ -36,4 +36,11 @@ jobs:
     steps:
       - name: pull machinedockercyc images
         run: |
-          docker push machinedockercyc/lotterydocker:latest
+          docker pull machinedockercyc/lottery_crawler:latest
+
+      - name: restart application
+        run: |
+          cd /home/cychouse/workspace/LotteryInsight
+          git pull origin main
+          docker-compose -f docker-compose.scheduler.yml down
+          docker-compose -f docker-compose.scheduler.yml up -d
