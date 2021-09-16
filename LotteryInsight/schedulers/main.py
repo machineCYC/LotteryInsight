@@ -6,6 +6,7 @@ import subprocess
 from apscheduler.schedulers.background import BackgroundScheduler
 from loguru import logger
 from LotteryInsight.utility.date import get_today
+from LotteryInsight.tools.db import query_mysql_command
 
 
 PROJECT_PATH = os.path.dirname(
@@ -20,33 +21,48 @@ def execute_commend(commend_lines: typing.Union[str, typing.List[str]]):
 
 
 def execute_daily_cash_crawler():
+    table = "DailyCash"
     today = get_today()
     commend_line = f"python {PROJECT_PATH}/LotteryInsight/tasks/brain.py \
         --create_table=False \
         --start_date={today} \
         --end_date={today} \
-        --table=DailyCash"
-    execute_commend(commend_line)
+        --table={table}"
+
+    sql_command = f"SELECT * FROM {table} WHERE ddate={today}"
+    ret = query_mysql_command(sql_command, table)
+    if not ret:
+        execute_commend(commend_line)
 
 
 def execute_lotto649_crawler():
+    table = "Lotto649"
     today = get_today()
     commend_line = f"python {PROJECT_PATH}/LotteryInsight/tasks/brain.py \
         --create_table=False \
         --start_date={today} \
         --end_date={today} \
-        --table=Lotto649"
-    execute_commend(commend_line)
+        --table={table}"
+
+    sql_command = f"SELECT * FROM {table} WHERE ddate={today}"
+    ret = query_mysql_command(sql_command, table)
+    if not ret:
+        execute_commend(commend_line)
 
 
 def execute_superlotto638_crawler():
+    table = "Superlotto638"
     today = get_today()
     commend_line = f"python {PROJECT_PATH}/LotteryInsight/tasks/brain.py \
         --create_table=False \
         --start_date={today} \
         --end_date={today} \
-        --table=Superlotto638"
-    execute_commend(commend_line)
+        --table={table}"
+
+    sql_command = f"SELECT * FROM {table} WHERE ddate={today}"
+    ret = query_mysql_command(sql_command, table)
+    if not ret:
+        execute_commend(commend_line)
 
 
 def main():
