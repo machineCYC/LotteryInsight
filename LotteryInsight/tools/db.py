@@ -49,8 +49,23 @@ def execute_mysql_command(
                 logger.info(f"execute sql:{s}")
                 _ = mysql_database_conn.execute(s)
         elif isinstance(sql_command, str):
-            logger.info(f"execute sql:{s}")
+            logger.info(f"execute sql:{sql_command}")
             mysql_database_conn.execute(sql_command)
     except Exception as e:
         logger.error(f"mysql_insert: {e}")
         # raise BaseException(f"mysql_insert: {e}")
+
+
+def query_mysql_command(
+    sql_command: typing.Union[str, typing.List[str]],
+    table: str,
+):
+    mysql_database = MYSQL_DATABASE_MAPPING.get(table, "")
+    mysql_database_conn = get_mysql_database_conn(mysql_database)
+
+    try:
+        logger.info(f"execute sql:{sql_command}")
+        ret = mysql_database_conn.execute(sql_command)
+        return ret.fetchall()
+    except Exception as e:
+        logger.error(f"{e}")
