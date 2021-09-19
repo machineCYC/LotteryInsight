@@ -1,4 +1,5 @@
 import os
+import sys
 import time
 import typing
 import subprocess
@@ -7,7 +8,11 @@ from apscheduler.schedulers.background import BackgroundScheduler
 from loguru import logger
 from LotteryInsight.utility.date import get_today
 from LotteryInsight.tools.db import query_mysql_command
+from LotteryInsight import config
 
+
+logger.remove()
+logger.add(sys.stderr, level=config.LOG_LEVEL)
 
 PROJECT_PATH = os.path.dirname(
     os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -29,7 +34,7 @@ def execute_daily_cash_crawler():
         --end_date={today} \
         --table={table}"
 
-    sql_command = f"SELECT * FROM {table} WHERE ddate={today}"
+    sql_command = f"SELECT * FROM {table} WHERE ddate='{today}'"
     ret = query_mysql_command(sql_command, table)
     if not ret:
         execute_commend(commend_line)
@@ -44,7 +49,7 @@ def execute_lotto649_crawler():
         --end_date={today} \
         --table={table}"
 
-    sql_command = f"SELECT * FROM {table} WHERE ddate={today}"
+    sql_command = f"SELECT * FROM {table} WHERE ddate='{today}'"
     ret = query_mysql_command(sql_command, table)
     if not ret:
         execute_commend(commend_line)
@@ -59,7 +64,7 @@ def execute_superlotto638_crawler():
         --end_date={today} \
         --table={table}"
 
-    sql_command = f"SELECT * FROM {table} WHERE ddate={today}"
+    sql_command = f"SELECT * FROM {table} WHERE ddate='{today}'"
     ret = query_mysql_command(sql_command, table)
     if not ret:
         execute_commend(commend_line)

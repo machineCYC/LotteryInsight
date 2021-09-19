@@ -14,7 +14,7 @@ def get_mysql_database_conn(database: str=''):
     )
     mysql_engine = create_engine(address)
     connect = mysql_engine.connect()
-    logger.info(f"get database:{database} connection")
+    logger.debug(f"get database:{database} connection")
     return connect
 
 
@@ -46,10 +46,10 @@ def execute_mysql_command(
     try:
         if isinstance(sql_command, list):
             for s in sql_command:
-                logger.info(f"execute sql:{s}")
+                logger.debug(f"execute sql:{s}")
                 _ = mysql_database_conn.execute(s)
         elif isinstance(sql_command, str):
-            logger.info(f"execute sql:{sql_command}")
+            logger.debug(f"execute sql:{sql_command}")
             mysql_database_conn.execute(sql_command)
     except Exception as e:
         logger.error(f"mysql_insert: {e}")
@@ -64,7 +64,7 @@ def query_mysql_command(
     mysql_database_conn = get_mysql_database_conn(mysql_database)
 
     try:
-        logger.info(f"execute sql:{sql_command}")
+        logger.debug(f"execute sql:{sql_command}")
         ret = mysql_database_conn.execute(sql_command)
         return ret.fetchall()
     except Exception as e:
