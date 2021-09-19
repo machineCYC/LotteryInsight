@@ -18,7 +18,7 @@ RUN --mount=type=secret,id=MYSQL_HOST \
   export MYSQL_USER=$(cat /run/secrets/MYSQL_USER) && \
   export MYSQL_PASSWORD=$(cat /run/secrets/MYSQL_PASSWORD) && \
   export MYSQL_PORT=$(cat /run/secrets/MYSQL_PORT) && \
-  python genenv.py
+  VERSION=PROD python genenv.py
 
 # time
 RUN echo "Asia/Taipei" > /etc/timezone
