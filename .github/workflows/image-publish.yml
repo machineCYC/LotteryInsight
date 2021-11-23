@@ -32,7 +32,7 @@ jobs:
   deploy:
     name: deploy images
     needs: push_to_registry
-    runs-on: self-hosted
+    runs-on: crawler
     steps:
       - name: pull machinedockercyc images
         run: |
@@ -40,7 +40,7 @@ jobs:
 
       - name: restart application
         run: |
-          cd ~/workspace/LotteryInsight
+          cd ~/workspace/deploy-container/LotteryInsight
           git pull origin main
           docker-compose -f docker-compose.scheduler.yml down
           docker-compose -f docker-compose.scheduler.yml up -d
