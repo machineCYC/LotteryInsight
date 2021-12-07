@@ -1,9 +1,12 @@
-version: "3"
+version: "3.3"
 services:
     mysql:
-        image: mysql
+        image: mysql:8.0
         ports:
-            - "3306:3306"
+          - target: 3306
+            published: 3306
+            mode: host
+
         environment:
             MYSQL_DATABASE: myDb
             MYSQL_USER: user
@@ -20,17 +23,23 @@ services:
         links:
             - mysql:db
         ports:
-            - 8080:80
+            - target: 80
+              published: 8080
+              mode: host
+
         environment:
             MYSQL_USER: user
             MYSQL_PASSWORD: test
             MYSQL_ROOT_PASSWORD: test
+            PMA_HOST: mysql
+
         networks:
             - dev
 
 
 networks:
   dev:
+    external: true
 
 volumes:
     mysql:

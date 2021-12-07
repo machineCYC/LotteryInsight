@@ -4,7 +4,7 @@ from configparser import ConfigParser
 
 def get_config_from_environment(env_content):
     # get config from env
-    env_content += "MYSQL_HOST={}\n".format(os.environ.get("MYSQL_HOST", ""))
+    # env_content += "MYSQL_HOST={}\n".format(os.environ.get("MYSQL_HOST", ""))
     env_content += "MYSQL_USER={}\n".format(os.environ.get("MYSQL_USER", ""))
     env_content += "MYSQL_PASSWORD={}\n".format(os.environ.get("MYSQL_PASSWORD", ""))
     env_content += "MYSQL_PORT={}\n".format(os.environ.get("MYSQL_PORT", ""))

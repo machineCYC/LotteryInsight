@@ -26,13 +26,13 @@ build-dev-image:
 	docker build -f .devcontainer/Dockerfile.dev -t lottery_crawler:latest .
 
 run-dev-mysql:
-	docker-compose -f .devcontainer/docker-compose.db.dev.yml up -d
+	docker stack deploy -c .devcontainer/docker-compose.db.dev.yml mysql
 
 end-dev-mysql:
-	docker-compose -f .devcontainer/docker-compose.db.dev.yml down
+	docker stack rm mysql
 
 run-dev-scheduler:
-	docker-compose -f .devcontainer/docker-compose.scheduler.dev.yml up -d
+	docker stack deploy -c .devcontainer/docker-compose.scheduler.dev.yml lottery_crawler
 
 end-dev-scheduler:
-	docker-compose -f .devcontainer/docker-compose.scheduler.dev.yml down
+	docker stack rm lottery_crawler
