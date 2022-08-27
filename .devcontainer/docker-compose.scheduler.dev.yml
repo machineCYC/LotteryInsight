@@ -1,4 +1,4 @@
-version: "3"
+version: "3.3"
 
 services:
   scheduler:
@@ -14,3 +14,4 @@ services:
 
 networks:
   dev:
+     external: true
