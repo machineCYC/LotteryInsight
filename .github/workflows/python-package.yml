@@ -29,3 +29,6 @@ jobs:
           VERSION=CI python genenv.py
           poetry install
           poetry run pytest --cov-report term-missing --cov-config=.coveragerc --cov=./ tests/
+      - name: Black format check
+        run: |
+          poetry run black ./LotteryInsight/ -l 80 --check
