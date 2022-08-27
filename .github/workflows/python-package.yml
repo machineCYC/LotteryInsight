@@ -22,10 +22,10 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip3 install pipenv
-          pipenv --python /usr/bin/python3
+          pip3 install poetry
+          poetry --python /usr/bin/python3
       - name: Test with pytest
         run: |
           VERSION=CI python genenv.py
-          pipenv sync
-          pipenv run pytest --cov-report term-missing --cov-config=.coveragerc --cov=./ tests/
+          poetry install
+          poetry run pytest --cov-report term-missing --cov-config=.coveragerc --cov=./ tests/

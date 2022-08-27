@@ -6,7 +6,7 @@ services:
       context: .
       dockerfile: Dockerfile
     image: lottery_crawler:latest
-    command: pipenv run python ./LotteryInsight/schedulers/main.py
+    command: poetry run python ./LotteryInsight/schedulers/main.py
     environment:
       - TZ=Asia/Taipei
     networks:
