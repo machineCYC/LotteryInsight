@@ -7,7 +7,7 @@ COPY . /workspace/
 WORKDIR /workspace/
 
 # install package
-RUN pip install pipenv && pipenv sync
+RUN pip install poetry && poetry install
 
 # genenv
 RUN --mount=type=secret,id=MYSQL_HOST \
