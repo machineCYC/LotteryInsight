@@ -24,6 +24,7 @@ jobs:
           pip install poetry
           poetry install
           VERSION=CI poetry run python genenv.py
+          pip list
       - name: Test with pytest
         run: |
           poetry run pytest --cov-report term-missing --cov-config=.coveragerc --cov=./ tests/
