@@ -31,4 +31,4 @@ jobs:
           pipenv run pytest --cov-report term-missing --cov-config=.coveragerc --cov=./ tests/
       - name: Black format check
         run: |
-          pipenv run black ./LotteryInsight/ --check
+          pipenv run black ./LotteryInsight/ -l 80 --check

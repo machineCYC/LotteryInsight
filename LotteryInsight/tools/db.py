@@ -7,7 +7,7 @@ from LotteryInsight.tools.datasets import MYSQL_DATABASE_MAPPING
 from sqlalchemy import create_engine
 
 
-def get_mysql_database_conn(database: str=''):
+def get_mysql_database_conn(database: str = ""):
     address = (
         f"mysql+pymysql://{config.MYSQL_USER}:{config.MYSQL_PASSWORD}"
         f"@{config.MYSQL_HOST}:{config.MYSQL_PORT}/{database}"
@@ -24,7 +24,9 @@ def generate_dataframe_insert_update_sql(df: pd.DataFrame, table: str):
     list_insert_update_commands = []
     for raw in list_data:
 
-        update_sql = ", ".join(["`{0}`='{1}'".format(c, e) for c, e in zip(table_columns, raw)])
+        update_sql = ", ".join(
+            ["`{0}`='{1}'".format(c, e) for c, e in zip(table_columns, raw)]
+        )
         update_sql += ", `SYS_UPDATE_COUNT`=`SYS_UPDATE_COUNT`+1"
         upsert_sql = """INSERT INTO `{0}` ({1}) VALUES ({2}) ON DUPLICATE KEY UPDATE {3}""".format(
             table,

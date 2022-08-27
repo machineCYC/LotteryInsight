@@ -11,7 +11,7 @@ def transfer_commonera2rocera(year: str):
 
 
 def transfer_date2ym(date: str):
-    ym = "-".join(date.split('-')[:2])
+    ym = "-".join(date.split("-")[:2])
     return ym
 
 
